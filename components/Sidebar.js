@@ -18,10 +18,8 @@ const Sidebar = () => {
     // getting user's chat refference
     const chatRef = collection(db,"chats");
     const userChatRef =  query(chatRef,where("users","array-contains",user.email));
-    const [chatsSnapshot,loading,error] = useCollection(userChatRef);
-    const d = getDocs(userChatRef)
-    const  querySnapshot = async()=> await getDocs(userChatRef);
-    
+    const [chatsSnapshot] = useCollection(userChatRef);
+  
     const createChat = () => {
         const input = prompt("Please enter an email address for the user you wish to chat with");
         if (!input) return null;
@@ -43,7 +41,7 @@ const Sidebar = () => {
     return (
         <Container>
             <Header>
-                <UserAvatar onClick={() => signOut(auth)} />
+                <UserAvatar src={user.photoURL} onClick={() => signOut(auth)} />
                 <IconsContainer>
                     <IconButton><ChatIcon /></IconButton>
                     <IconButton><MoreVertIcon /></IconButton>
@@ -57,7 +55,7 @@ const Sidebar = () => {
 
             {/* List of chats */}
             {
-               chatsSnapshot && chatsSnapshot?.docs.map(chat => <Chat key={chat.id} id={chat.id} user={chat.data().users}/>)
+               chatsSnapshot && chatsSnapshot?.docs.map(chat => <Chat key={chat.id} id={chat.id} users={chat.data().users}/>)
             }
         </Container>
     )
