@@ -3,22 +3,25 @@ import { useRouter } from "next/router";
 import styled from "styled-components";
 import ChatScreen from "../../components/ChatScreen";
 import Sidebar from "../../components/Sidebar";
-import { collection, doc, setDoc, where, query, getDocs,getDoc, orderBy } from "firebase/firestore";
+import { collection, doc,query, getDocs,getDoc, orderBy } from "firebase/firestore";
 import { auth, db } from "../../firebase";
+import getRecipientEmail from "../../utils/getRecipientEmail";
+import { useAuthState } from "react-firebase-hooks/auth";
 
 
 
 const Chat = ({ messages,chat }) => {
     const router = useRouter();
+    const [user]=useAuthState(auth)
     const { query } = router.query;
     return (
         <Container>
             <Head>
-                <title>chat with {getRecipient}</title>
+                <title>chat with {getRecipientEmail(chat.users,user)}</title>
             </Head>
             <Sidebar />
             <ChatContainer>
-                <ChatScreen />
+                <ChatScreen chat={chat} messages = {messages} />
             </ChatContainer>
         </Container>
     )
@@ -28,15 +31,9 @@ export default Chat;
 export async function getServerSideProps(context) {
 
     const ref = doc(db, "chats", context.query.id);
-
-
     const refMessages = collection(ref, "messages");
-
     const messagesRes = await getDocs(query(refMessages, orderBy("timestamp", "asc")));
-
-
     const messages = messagesRes.docs.map((doc) => {
-console.log("ok",doc)
       return  {
            id: doc.id,
             ...doc.data(),
@@ -56,9 +53,9 @@ console.log("ok",doc)
     const chat = {
         id: chatRes.id,
         ...chatRes.data()
-      
     }
-   console.log(chat,messages)
+//for debugging chat and messages
+//    console.log(chat,messages)
 
 
     return {
@@ -82,4 +79,5 @@ overflow: scroll;
 }
 -ms-overflow-style: none;
 scrollbar-width: none;
+
 `;

@@ -9,7 +9,7 @@ import { signOut } from 'firebase/auth';
 import { auth, db } from '../firebase';
 import { useAuthState } from "react-firebase-hooks/auth";
 import { collection, doc, setDoc ,where,query,getDocs} from "firebase/firestore";
-import {useCollection} from "react-firebase-hooks/firestore"
+import {useCollection} from "react-firebase-hooks/firestore";
 import Chat from './Chat';
 import { async } from '@firebase/util';
 
@@ -64,6 +64,18 @@ const Sidebar = () => {
 export default Sidebar;
 
 const Container = styled.div`
+flex:0.45;
+border-right:1px solid whitesmoke;
+min-height:100vh;
+overflow-y: scroll;
+min-width: 300px;
+max-width: 350px;
+::-webkit-scrollbar{
+    display: none;
+}
+-ms-overflow-style: none;
+scrollbar-width: none;
+
 
 `;
 
@@ -85,7 +97,7 @@ border-radius: 2px;
 
 const SearchInput = styled.input`
 outline-width: 0;
-/* border:none; */
+border:none;
 flex:1;
 `;
 
